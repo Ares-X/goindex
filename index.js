@@ -6,7 +6,8 @@ var authConfig = {
     "client_id": "202264815644.apps.googleusercontent.com",
     "client_secret": "X4Z3ca8xfWDb1Voo-F9a7ZxJ",
     "refresh_token": "", // 授权 token
-    "root": "root" // 根目录ID
+    "root": "root", // 根目录ID
+    "hidden": "Protected" //要隐藏的文件夹名
 };
 
 var gd;
@@ -82,6 +83,16 @@ async function apiRequest(request) {
         }
       }
       let list = await gd.list(path);
+      if (authConfig.hidden !=undefined && authConfig.hidden != null && authConfig.hidden != ""){
+        if (path=="/"){
+          let i;
+          for (i in list.files){
+            if (list.files[i].name==authConfig.hidden)
+            {break}
+          }
+        list.files.splice(i,1);
+        }
+      }
       return new Response(JSON.stringify(list),option);
     }else{
       let file = await gd.file(path);
